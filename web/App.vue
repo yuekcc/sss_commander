@@ -9,7 +9,6 @@ import ShellConsole from './ShellConsole.vue'
     </div>
   </header>
   <main class="container flex mr-auto ml-auto">
-
     <div class="flex-1">
       <ShellConsole></ShellConsole>
     </div>

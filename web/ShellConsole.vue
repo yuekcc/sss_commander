@@ -1,7 +1,8 @@
 <script setup>
-import { nextTick, reactive, ref, onMounted, computed } from 'vue';
-import { runScript } from './service';
+import { computed, onBeforeUnmount, onMounted, reactive, ref } from 'vue';
 import ATyped from './components/ATyped.vue';
+import { runScript } from './service';
+import throttle from "lodash/throttle";
 
 const commandLine = ref('')
 const messageId = ref(`${Date.now()}`);
@@ -25,6 +26,8 @@ const messagesDisplay = computed(() => {
 
   return list;
 })
+
+let observer = null;
 
 
 onMounted(() => {
@@ -56,17 +59,33 @@ onMounted(() => {
       messages[id].pong = messagesCache[id]?.trimEnd()
     }
 
-    nextTick(() => {
-      const el = document.querySelector('.is-last-message')
-      if (el) {
-        el.scrollIntoView(false)
-      }
-    })
+    // nextTick(() => {
+    //   const el = document.querySelector('.is-last-message')
+    //   if (el) {
+    //     el.scrollIntoView()
+    //   }
+    // })
   })
+
+  observer = new MutationObserver(throttle(() => {
+    console.log('tree updated')
+    const el = document.querySelector('#view-control')
+    if (el) {
+      el.scrollIntoView(false)
+    }
+  }, 100));
+
+  observer.observe(document.querySelector('.shell-console'), { attributes: true, childList: true, subtree: true });
+})
+
+onBeforeUnmount(() => {
+  if (observer) {
+    observer.disconnect()
+  }
 })
 
 function isLastMessage(idx) {
-  return idx === (messages.length - 1)
+  return idx === (messagesDisplay.value.length - 1)
 }
 
 function doRunCommand() {
@@ -88,32 +107,35 @@ function runCommand(event) {
 </script>
 
 <template>
-  <div class="shell-console h-full">
-    <div v-for="(message, index) in messagesDisplay" :key="message.id">
-      <div class="query flex justify-end mb-2" v-if="message.ping">
-        <div>
-          <div class="text-right mb-2">
-            <span class="text-xl p-1 border rounded-md">😀</span>
-          </div>
-          <div class="flex-initial min-w-[500px] max-w-[800px] border p-2 bg-blue-100 rounded-md">
-            <pre class="word-break">{{ message.ping }}</pre>
+  <div class="shell-console p-5 bg-white relative overflow-hidden" style="height: calc(100vh - 100px);">
+    <div class="h-[90%] p-5 overflow-y-auto">
+      <div v-for="(message, index) in messagesDisplay" :key="message.id">
+        <div class="query flex justify-end mb-2" v-if="message.ping">
+          <div>
+            <div class="text-right mb-2">
+              <span class="text-xl p-1 border rounded-md">😀</span>
+            </div>
+            <div class="flex-initial min-w-[500px] max-w-[800px] border p-2 bg-blue-100 rounded-md">
+              <pre class="word-break">{{ message.ping }}</pre>
+            </div>
           </div>
         </div>
-      </div>
-      <div class="query flex justify-start mb-2" :class="{ 'is-last-message': isLastMessage(index) }">
-        <div>
-          <div class="text-left mb-2">
-            <span class="text-xl p-1 border rounded-md">🛸</span>
+        <div class="query flex justify-start mb-2">
+          <div>
+            <div class="text-left mb-2">
+              <span class="text-xl p-1 border rounded-md">🛸</span>
+            </div>
+            <div class="message flex-initial min-w-[500px] max-w-full border p-2 bg-gray-100 rounded-md">
+              <ATyped v-if="message.pong" :content="message.pong"></ATyped>
+              <pre v-else>正在执行 ...</pre>
+            </div>
+
           </div>
-          <div class="message flex-initial min-w-[500px] max-w-full border p-2 bg-gray-100 rounded-md">
-            <ATyped v-if="message.pong" :content="message.pong"></ATyped>
-            <pre v-else>正在执行 ...</pre>
-          </div>
-          <div class="h-[30px]" v-if="isLastMessage(index)"></div>
         </div>
+        <div v-if="isLastMessage(index)" id="view-control" class="h-[100px]"></div>
       </div>
     </div>
-    <div class="sticky bottom-0 pt-2 pb-2">
+    <div class="absolute left-0 right-0 bottom-0 p-5">
       <textarea type="text" placeholder="Ctrl+Enter 发送命令。仅支持非交互式命令" v-model="commandLine" @keyup="runCommand($event)"
         class="w-full rounded-md"></textarea>
     </div>

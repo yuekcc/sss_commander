@@ -1,9 +1,8 @@
 import { App } from '@tinyhttp/app';
 import formidable, { json, multipart, octetstream, querystring } from 'formidable';
-import childProcess from 'node:child_process';
 import sirv from 'sirv';
 
-import { setConsoleListener, runScript } from './command_runner';
+import { runScript, setConsoleListener } from './command_runner';
 
 const app = new App();
 app
