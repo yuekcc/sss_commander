@@ -1,6 +1,7 @@
 <script setup>
 import { nextTick, reactive, ref, onMounted, computed } from 'vue';
 import { runScript } from './service';
+import ATyped from './components/ATyped.vue';
 
 const commandLine = ref('')
 const messageId = ref(`${Date.now()}`);
@@ -9,10 +10,12 @@ const messages = reactive({
   [messageId.value]: {
     id: messageId.value,
     ping: '',
-    pong: '欢迎回来',
+    pong: '欢迎回来。请输入命令',
     time: messageId.value,
   }
 })
+
+const messagesCache = {};
 
 const messagesDisplay = computed(() => {
   const list = Object.values(messages)
@@ -34,6 +37,8 @@ onMounted(() => {
       messages[id] = {
         id,
       }
+
+      messagesCache[id] = '';
     }
 
     if (status === 'started') {
@@ -41,12 +46,14 @@ onMounted(() => {
     }
 
     if (status === 'running') {
-      messages[id].pong = `${messages[id].pong || ''}` + `${pong || ''}`
+      // messages[id].pong = `${messages[id].pong || ''}` + `${pong || ''}`
+      messagesCache[id] = `${messagesCache[id] || ''}` + `${pong || ''}`
     }
 
     if (status === 'completed') {
       messages[id].code = code
       messages[id].time = time
+      messages[id].pong = messagesCache[id]?.trimEnd()
     }
 
     nextTick(() => {
@@ -99,7 +106,8 @@ function runCommand(event) {
             <span class="text-xl p-1 border rounded-md">🛸</span>
           </div>
           <div class="message flex-initial min-w-[500px] max-w-full border p-2 bg-gray-100 rounded-md">
-            <pre>{{ message.pong || '<EMPTY>' }}</pre>
+            <ATyped v-if="message.pong" :content="message.pong"></ATyped>
+            <pre v-else>正在执行 ...</pre>
           </div>
           <div class="h-[30px]" v-if="isLastMessage(index)"></div>
         </div>
