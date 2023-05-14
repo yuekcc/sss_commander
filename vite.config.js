@@ -12,6 +12,9 @@ export default defineConfig({
       '/api': {
         target: 'http://127.0.0.1:3000',
       },
+      '^/apps/.+/api': {
+        target: 'http://127.0.0.1:3000',
+      },
     },
   },
 });

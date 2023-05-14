@@ -1,8 +1,8 @@
 <script setup>
-import { computed, onBeforeUnmount, onMounted, reactive, ref } from 'vue';
-import ATyped from './components/ATyped.vue';
-import { runScript } from './service';
 import throttle from 'lodash/throttle';
+import { computed, onBeforeUnmount, onMounted, reactive, ref } from 'vue';
+import ATyped from './ATyped.vue';
+import { runScript } from './service';
 
 const commandLine = ref('');
 const messageId = ref(`${Date.now()}`);
@@ -30,9 +30,9 @@ const messagesDisplay = computed(() => {
 let observer = null;
 
 onMounted(() => {
-  const sse = new EventSource('/api/console/pong');
+  const sse = new EventSource('/apps/shell_console/api/console/pong');
   sse.addEventListener('message', ({ data }) => {
-    console.log(data);
+    // console.log(data);
     const { id, status, ping, pong, src, code, time } = JSON.parse(data);
 
     if (!messages[id]) {
@@ -60,7 +60,6 @@ onMounted(() => {
 
   observer = new MutationObserver(
     throttle(() => {
-      console.log('tree updated');
       const el = document.querySelector('#view-control');
       if (el) {
         el.scrollIntoView(false);
@@ -128,13 +127,8 @@ function runCommand(event) {
       </div>
     </div>
     <div class="absolute left-0 right-0 bottom-0 p-5">
-      <textarea
-        v-model="commandLine"
-        type="text"
-        placeholder="Ctrl+Enter 发送命令。仅支持非交互式命令"
-        class="w-full rounded-md"
-        @keyup="runCommand($event)"
-      ></textarea>
+      <textarea v-model="commandLine" type="text" placeholder="Ctrl+Enter 发送命令。仅支持非交互式命令" class="w-full rounded-md"
+        @keyup="runCommand($event)"></textarea>
     </div>
   </div>
 </template>

@@ -1,5 +1,5 @@
 <script setup>
-import ShellConsole from './ShellConsole.vue';
+import ShellConsole from '../apps/shell_console/web';
 </script>
 
 <template>

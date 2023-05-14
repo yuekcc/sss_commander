@@ -1,41 +1,21 @@
 import { App } from '@tinyhttp/app';
-import formidable, { json, multipart, octetstream, querystring } from 'formidable';
 import sirv from 'sirv';
 
-import { runScript, setConsoleListener } from './command_runner';
+import { appList } from './app_list';
 
 const app = new App();
-app
-  .use('/public', sirv('public', { dev: true }))
-  .get('/', (_, res) => {
-    res.redirect('/public/index.html');
-  })
-  .get('/api/console/pong', (req, res) => {
-    res.set({
-      'Content-Type': 'text/event-stream',
-      'Cache-Control': 'no-cache',
-      'Connection': 'keep-alive',
-    });
+app.use('/public', sirv('public', { dev: true })).get('/', (_, res) => {
+  res.redirect('/public/index.html');
+});
 
-    setConsoleListener(data => {
-      res.write(`data: ${JSON.stringify(data)}` + '\n\n');
-    });
-  })
-  .post('/api/console', (req, res) => {
-    const formParser = formidable({ enabledPlugins: [octetstream, querystring, multipart, json] });
-    formParser.parse(req, (err, fields) => {
-      if (err) {
-        console.error('parser form error, %s', err.message);
-        res.send(err.message).status(400);
-        return;
-      }
-
-      const script = fields.script?.[0];
-      const id = fields.id?.[0];
-      runScript(id, script);
-      res.send({ id, message: 'runner started' });
-    });
-  })
-  .listen(3000, () => {
-    console.log('listen on http://127.0.0.1:3000');
+appList.forEach(config => {
+  console.log('install app: %s', config.name);
+  config.apiRoutes?.forEach(api => {
+    console.log('add api: %s %s', api.method, api.path);
+    app[api.method](api.path, api.handle);
   });
+});
+
+app.listen(3000, () => {
+  console.log('listen on http://127.0.0.1:3000');
+});
