@@ -1,14 +1,13 @@
 <script setup>
 import { onMounted, onUnmounted, ref } from 'vue';
-import Typed from 'typed.js'
-
+import Typed from 'typed.js';
 
 const props = defineProps({
   content: { type: String, required: true },
-  typeSpeed: { type: Number, default: 10 }
-})
+  typeSpeed: { type: Number, default: 1 },
+});
 
-const panelRef = ref(null)
+const panelRef = ref(null);
 let typedInstance = null;
 
 onMounted(() => {
@@ -17,15 +16,14 @@ onMounted(() => {
     contentType: null,
     typeSpeed: props.typeSpeed,
     showCursor: false,
-  })
-})
+  });
+});
 
 onUnmounted(() => {
   if (typedInstance) {
-    typedInstance.destroy()
+    typedInstance.destroy();
   }
-})
-
+});
 </script>
 
 <template>
