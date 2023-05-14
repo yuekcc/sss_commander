@@ -27,5 +27,5 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <pre ref="panelRef"></pre>
+  <pre ref="panelRef" class="whitespace-pre-wrap break-all"></pre>
 </template>

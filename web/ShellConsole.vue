@@ -108,8 +108,8 @@ function runCommand(event) {
             <div class="text-right mb-2">
               <span class="text-xl p-1 border rounded-md">😀</span>
             </div>
-            <div class="flex-initial min-w-[500px] max-w-[800px] border p-2 bg-blue-100 rounded-md">
-              <pre class="word-break">{{ message.ping }}</pre>
+            <div class="message flex-initial min-w-[500px] max-w-[50vw] border p-2 bg-gray-100 rounded-md">
+              <pre class="whitespace-pre-wrap break-all">{{ message.ping }}</pre>
             </div>
           </div>
         </div>
@@ -118,9 +118,9 @@ function runCommand(event) {
             <div class="text-left mb-2">
               <span class="text-xl p-1 border rounded-md">🛸</span>
             </div>
-            <div class="message flex-initial min-w-[500px] max-w-full border p-2 bg-gray-100 rounded-md">
+            <div class="message flex-initial min-w-[500px] max-w-[50vw] border p-2 bg-sky-100 rounded-md">
               <ATyped v-if="message.pong" :content="message.pong"></ATyped>
-              <pre v-else>正在执行 ...</pre>
+              <pre v-else class="whitespace-pre-wrap break-all">正在执行 ...</pre>
             </div>
           </div>
         </div>
