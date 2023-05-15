@@ -1,7 +1,7 @@
-import pongApi from './api/pong';
-import consoleApi from './api/console';
+import apis from './apis';
 
 export default {
   name: 'shell_console',
-  apiRoutes: [pongApi, consoleApi],
+  apis: apis,
+  web: '/apps/shell_console/dist/web',
 };
