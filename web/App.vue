@@ -1,5 +1,15 @@
 <script setup>
-import ShellConsole from '../apps/shell_console/web';
+import { onMounted, shallowRef } from 'vue';
+
+function loadApp(url) {
+  return import(/* @vit-ignore */ url).then(m => m.default);
+}
+
+const app = shallowRef(null);
+onMounted(async () => {
+  const url = `/apps/shell_console/dist/web/index.js`;
+  app.value = await loadApp(url);
+});
 </script>
 
 <template>
@@ -10,7 +20,12 @@ import ShellConsole from '../apps/shell_console/web';
   </header>
   <main class="container flex mr-auto ml-auto">
     <div class="flex-1">
-      <ShellConsole></ShellConsole>
+      <template v-if="app">
+        <component :is="app"></component>
+      </template>
+      <template v-else>
+        <span>Loading ...</span>
+      </template>
     </div>
   </main>
 </template>
