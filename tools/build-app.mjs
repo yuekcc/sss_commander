@@ -3,6 +3,8 @@ import { resolve } from 'node:path';
 import { copyFile } from 'node:fs/promises';
 import Vue from 'unplugin-vue/esbuild';
 
+const ENABLE_MINIFY = true;
+
 function buildApis() {
   return build({
     entryPoints: [resolve(process.cwd(), 'apis/index.js')],
@@ -14,8 +16,8 @@ function buildApis() {
     define: {
       'process.env.NODE_ENV': JSON.stringify('production'),
     },
-    sourcemap: true,
-    minify: true,
+    sourcemap: false,
+    minify: ENABLE_MINIFY,
   });
 }
 
@@ -30,8 +32,8 @@ function buildWeb() {
     define: {
       'process.env.NODE_ENV': JSON.stringify('production'),
     },
-    sourcemap: true,
-    minify: true,
+    sourcemap: false,
+    minify: ENABLE_MINIFY,
     external: ['vue'],
     plugins: [Vue({})],
   });
