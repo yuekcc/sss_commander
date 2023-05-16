@@ -49,6 +49,8 @@
     "eslint-config-prettier": "^8.0.0",
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-vue": "^9.12.0",
+    "heyui": "2.2.0-alpha.1",
+    "less": "^4.1.3",
     "mitt": "^3.0.0",
     "postcss": "^8.4.23",
     "prettier": "^2.0.0",
