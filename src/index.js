@@ -12,10 +12,8 @@ app.use('/public', sirv('public', { dev: true })).get('/', (_, res) => {
 app.use('/metadata', (_, res) => {
   res.send(
     appList.map(it => {
-      return {
-        name: it.name,
-        web: it.web,
-      };
+      const { apis, ...otherFields } = it;
+      return otherFields;
     }),
   );
 });

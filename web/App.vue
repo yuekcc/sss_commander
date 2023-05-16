@@ -1,30 +1,57 @@
 <script setup>
-import { onMounted, shallowRef } from 'vue';
+import { loadingBar } from 'heyui';
+import { reactive, ref, shallowRef } from 'vue';
 
-function loadApp(url) {
+import AppList from './components/AppList.vue';
+
+function loadAppMainComponent(url) {
   return import(/* @vit-ignore */ url).then(m => m.default);
 }
 
-const app = shallowRef(null);
-onMounted(async () => {
-  const url = `/apps/shell_console/dist/web/index.js`;
-  app.value = await loadApp(url);
+const app = reactive({
+  name: '',
+  webPath: '',
+  loading: false,
+  mainComponent: shallowRef(null),
 });
+
+async function startApp(appMetadata) {
+  loadingBar.start();
+  app.loading = true;
+  try {
+    Object.entries(appMetadata).forEach(([key, value]) => {
+      app[key] = value;
+    });
+
+    console.log('#startApp', appMetadata);
+    const url = `/${appMetadata.web}/index.js`.replace(/\/+/g, '/');
+    app.mainComponent = await loadAppMainComponent(url);
+  } finally {
+    loadingBar.success();
+    app.loading = false;
+  }
+}
 </script>
 
 <template>
   <header class="shadow p-3 mb-5 sticky top-0 bg-white">
-    <div class="container flex mr-auto ml-auto">
-      <h1 class="text-xl">NAS 命令行</h1>
+    <div class="container flex mr-auto ml-auto items-center">
+      <div class="mr-2">
+        <AppList @select="startApp"></AppList>
+      </div>
+      <h1 class="text-xl">{{ app.displayName || app.name || 'SSS_Commander' }}</h1>
     </div>
   </header>
   <main class="container flex mr-auto ml-auto">
     <div class="flex-1">
-      <template v-if="app">
-        <component :is="app"></component>
+      <template v-if="app.loading">
+        <span>Loading ...</span>
+      </template>
+      <template v-else-if="!app.loading && app.mainComponent">
+        <component :is="app.mainComponent"></component>
       </template>
       <template v-else>
-        <span>Loading ...</span>
+        <span>请选择一个应用</span>
       </template>
     </div>
   </main>

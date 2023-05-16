@@ -2,6 +2,8 @@ import apis from './apis';
 
 export default {
   name: 'shell_console',
-  apis: apis,
+  displayName: '命令行',
   web: '/apps/shell_console/dist/web',
+  icon: `https://placehold.co/32`,
+  apis: apis,
 };
