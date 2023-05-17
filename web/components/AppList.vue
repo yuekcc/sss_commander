@@ -23,17 +23,17 @@ onMounted(async () => {
 
 <template>
   <Tooltip ref="tooltipRef" theme="white" trigger="click">
-    <AppHubIcon></AppHubIcon>
+    <AppHubIcon class="hover:bg-sky-100 hover:rounded hover:cursor-pointer"></AppHubIcon>
     <template #content>
       <div class="app-list">
         <div class="mb-2">
           <Search v-model="searchKeyword"></Search>
         </div>
-        <div class="max-h-96 overflow-y-auto">
+        <div class="max-h-96 overflow-y-auto flex flex-col gap-2">
           <div
             v-for="app in appList"
             :key="app.name"
-            class="app flex justify-start items-center"
+            class="flex justify-start items-center hover:bg-sky-100 hover:rounded hover:cursor-pointer"
             @click="() => selectApp(app)"
           >
             <div class="flex-initial mr-2"><img :src="app.icon" width="32" height="32" /></div>
@@ -44,14 +44,3 @@ onMounted(async () => {
     </template>
   </Tooltip>
 </template>
-
-<style lang="less">
-.app-list {
-  .app {
-    &:hover {
-      background-color: #f3f3f3;
-      cursor: pointer;
-    }
-  }
-}
-</style>
