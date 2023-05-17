@@ -6,10 +6,6 @@
 
 > 后续会迁移到 bun。bun 自带 sqlite 支持，比较方便。
 
-<p align="center">
-  <img width="800" src="./screen.png"/>
-</p>
-
 ## 特性
 
 - [ ] 简单的登陆支持
@@ -33,6 +29,16 @@
 ## 已知问题
 
 如果用以 root 启动服务，服务器相当于白给别人。这个控制台只考虑内网使用的场景。
+
+### 一些截图
+
+<p align="center">
+  <img width="800" src="./screen.png"/>
+</p>
+
+<p align="center">
+  <img width="800" src="./screen-1.png"/>
+</p>
 
 ## LICENSE
 
