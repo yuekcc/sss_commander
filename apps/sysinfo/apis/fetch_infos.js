@@ -41,11 +41,11 @@ function fetchHwInfo() {
   const result = [
     {
       label: 'CPU',
-      content: `${cpus?.[0].model || 'UNKNOWN CPU MODEL'} @ ${cpus?.[0].speed || '??'}Hz`,
+      content: `${cpus?.[0].model || 'UNKNOWN CPU MODEL'} @ ${cpus?.[0].speed || '??'}MHz`,
     },
     {
       label: '内存',
-      content: `${totalmem / 1024 / 1024}GB`,
+      content: `${parseInt(totalmem / 1024 / 1024)}MB`,
     },
     ...Object.entries(networkInterfaces || {}).map(([name, ipAddrs], index) => {
       const ipv4 = ipAddrs.find(it => it.family === 'IPv4');
