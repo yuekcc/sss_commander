@@ -17,6 +17,7 @@ const messages = reactive({
 });
 
 const messagesCache = {};
+const sss = ref(null);
 
 const messagesDisplay = computed(() => {
   const list = Object.values(messages);
@@ -30,8 +31,8 @@ const messagesDisplay = computed(() => {
 let observer = null;
 
 onMounted(() => {
-  const sse = new EventSource('/apps/shell_console/api/console/pong');
-  sse.addEventListener('message', ({ data }) => {
+  sss.value = new EventSource('/apps/shell_console/api/console/pong');
+  sss.value.addEventListener('message', ({ data }) => {
     // console.log(data);
     const { id, status, ping, pong, src, code, time } = JSON.parse(data);
 
@@ -73,6 +74,10 @@ onMounted(() => {
 onBeforeUnmount(() => {
   if (observer) {
     observer.disconnect();
+  }
+
+  if (sss.value) {
+    sss.value.close();
   }
 });
 
@@ -127,8 +132,13 @@ function runCommand(event) {
       </div>
     </div>
     <div class="absolute left-0 right-0 bottom-0 p-5">
-      <textarea v-model="commandLine" type="text" placeholder="Ctrl+Enter 发送命令。仅支持非交互式命令" class="w-full rounded-md"
-        @keyup="runCommand($event)"></textarea>
+      <textarea
+        v-model="commandLine"
+        type="text"
+        placeholder="Ctrl+Enter 发送命令。仅支持非交互式命令"
+        class="w-full rounded-md"
+        @keyup="runCommand($event)"
+      ></textarea>
     </div>
   </div>
 </template>
